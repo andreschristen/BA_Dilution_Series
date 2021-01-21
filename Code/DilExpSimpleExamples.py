@@ -17,7 +17,7 @@ JA Christen, jac@cimat.mx
 
 from numpy import array
 from pylab import figure, tight_layout
-
+### This is local packages (no installed)
 from DilExp import DilExp, MultiDilExp
 
 
