@@ -17,7 +17,7 @@ Abstrac:
 Dilution experiments are performed routinely in microbial laboratories.
 However, their results are not properly analyzed, with only very basic hueristic
 formulas.  We present a proper statistical analysis of these experiments and
-include also a further analysis of the bacterial evolution under temperature stress. 
+include also a further analysis of the bacterial evolution under temperature stress.
 """
 
 # Packages
@@ -41,7 +41,7 @@ from pytwalk import pytwalk
 """
 #### Example importing data from Excel file using ReadData
 #### Read data, typical a single lab per file, in standarized format.
-#### See for example DataInputExampleLab5.xls 
+#### See for example DataInputExampleLab5.xls
 #### Only the first countable dilution is considered in this format.
 
 from pandas import read_excel
@@ -53,7 +53,7 @@ spreadsheet = read_excel( 'DataInputExampleLab5.xls', ['Parameters', 'Data', 'Ex
 print("Reading data from Lab5.")
 Lab5 = ReadData(spreadsheet)
 
-spreadsheet = read_excel( 'DataInputExampleLab6.xls', ['Parameters', 'Data', 'Exp Info'])    
+spreadsheet = read_excel( 'DataInputExampleLab6.xls', ['Parameters', 'Data', 'Exp Info'])
 print("\nReading data from Lab6.")
 Lab6 = ReadData(spreadsheet)
 
@@ -68,12 +68,12 @@ Lab5['CaviCide_high1'].RunTwalk(T=100000)
 Lab6['CaviCide_high1'].RunTwalk(T=100000)
 mdlist = [ Lab5['CaviCide_high1'], Lab6['CaviCide_high1']]
 Il = InterLabDilExp(mdlist)
-Il.RunTwalk(T=200000)  
+Il.RunTwalk(T=200000)
 figure(2)
 kde_list = Il.AnaEs(col=['blue','blue'])
 
-"""            
-            
+"""
+
 
 def GetKDE( data, alpha=0.001, N=200, cut_at_zero=True, bw_method=lambda kde: kde.n**(-1.0/((kde.d + 4)*1.6))):
     """ Kernel density estimation of data using guassian kernels.
@@ -87,11 +87,11 @@ def GetKDE( data, alpha=0.001, N=200, cut_at_zero=True, bw_method=lambda kde: kd
     C = sum(diff(e)*kde[:-1]) ### Keep the integral == 1
     return e, kde/C
 
-            
+
 def ReadData(spreadsheet):
     """Read data, typical a single lab, in standarized format.
        See DataInputExample.xls .
-       
+
        Note that the surface area is not read and is set to 1.
        It is not currently used.
     """
@@ -117,7 +117,7 @@ def ReadData(spreadsheet):
 
 
 class DilExp:
-    
+
     def __init__( self, J=7, alpha0=1, alpha=10, alphap=1000, c=30, q=0.05,\
                  pr_a=10, Sc=1, Sc_unit=r"cm^2", betabinom=False):
         """Dilution CFU count experiment analysis:
@@ -146,11 +146,11 @@ class DilExp:
         self.center = self.c/2
         self.pr_2a2 = 4*2*float(pr_a**2)
         self.prior_range = [ 0, int(round(self.c*2.0))]
-        self.l_range = arange( self.prior_range[0], self.prior_range[1], dtype=int)  ### Range for n_s  
+        self.l_range = arange( self.prior_range[0], self.prior_range[1], dtype=int)  ### Range for n_s
         self.betabinom = betabinom
 
 
-    def Loghs( self, i):  
+    def Loghs( self, i):
         """Log Prior for n_s. Uniform."""
         #if (isinstance( i, int)): #does not work with self.l_range[i] !
         if ((i >= self.prior_range[0]) and (i <= self.prior_range[-1])):
@@ -169,18 +169,18 @@ class DilExp:
         xlabel(r"$n_s$")
         ylabel("Probability")
 
-    
+
     def Logh0( self, k):
         """LogPrior for n_0, given the dilution to be counted self.s."""
         return sum([self.Loghs(int(round(k*self.dil[i]))) \
-                    for i in range(self.m)]) 
+                    for i in range(self.m)])
 
     #def Logh0( self, k):
     #    """LogPrior for n_0, given the dilution to be counted self.s."""
-    #    return sum([-log(k + 1) for i in range(self.m)])  
+    #    return sum([-log(k + 1) for i in range(self.m)])
 
 
-    
+
     def PlotPriorh0( self, post_rng_indx):
         y = exp(array([self.Logh0(k) for k in post_rng_indx]))
         y /= sum(y)
@@ -200,8 +200,11 @@ class DilExp:
         return binom.rvs( n=N0, p=self.dil)
 
     def Data( self, s, y, calc_post=False):
-        """s = a list with the decreasing number of the counted dilution for each plate
-           y = a list with the counts, same length as s."""
+        """s = a list with the delusion number of each of  the counted dilusions (in non-increasing order)
+           y = a list with the counts, same length as s.
+        Agregar un ejemplo
+         """
+
         self.s = array(s, dtype=int)
         self.y = array(y, dtype=int)
         #print "s",s
@@ -224,12 +227,12 @@ class DilExp:
                          float(self.alphap)**-1 * (1.0-self.q)
         #### ### Vector  min(dil) most be > 10**-15
         self.ymax = max(self.y)
-        ### These constants are auxiliary to the calculations 
+        ### These constants are auxiliary to the calculations
         self.C1 = log(self.dil) ### Vector
         self.C2 = log(1.0-self.dil) ### Vector
         self.C3 = sum(self.y*(self.C1-self.C2) - gammaln(self.y + 1))
         self.C2 = sum(self.C2)
-        
+
         self.mn = mean(self.y)
         self.sd = sqrt(var(self.y))
         if calc_post:
@@ -265,11 +268,11 @@ class DilExp:
             la = 1/self.dil[j] + 1
             a = la*self.dil[j] #= 2 p=self.dil[j]
             b = la*(1-self.dil[j])
-            # BetaBinom( y | k, a, b) 
+            # BetaBinom( y | k, a, b)
             llkh += gammaln(k+1) - gammaln(y+1) - gammaln(k-y+1) +\
                         betaln( y+a, k-y+b) - betaln( a, b)
         return llkh
- 
+
     def LogPost( self, k):
         if self.betabinom:
             return self.Logh0(k) + self.LogLikelihoodBetaBinom(k)
@@ -277,13 +280,13 @@ class DilExp:
             return self.Logh0(k) + self.LogLikelihood(k)
 
 
-    def CalculatePost( self, betabinom=False, k_range=0):    
+    def CalculatePost( self, betabinom=False, k_range=0):
         """ Calculate and normlaize posterior.
             k_range=0, automatic range calculation for k."""
         ### Range for k:
         if isinstance(k_range, int):
             if (max(self.s) == 0):  ### Range for n_0
-                self.k_range = arange( max( self.ymax, self.l_range[0]*self.mul), self.l_range[-1]*self.mul, dtype=int)   
+                self.k_range = arange( max( self.ymax, self.l_range[0]*self.mul), self.l_range[-1]*self.mul, dtype=int)
             else:
                 self.k_range = arange( max( self.ymax, self.l_range[0]*self.mul), self.l_range[-1]*self.mul,\
                     self.alpha**(max(self.s)-1) * self.alphap, dtype=int)
@@ -331,7 +334,7 @@ class DilExp:
 
     def PlotPost( self, betabinom=False, CFU_X_Area=True, log10_p1=True, plot_data=True, color='blue', linestyle='solid'):
         self.CalculatePost(betabinom=betabinom)
-        
+
         ### Select range for posterior:
         #S = 0.0
         q1 = 0.0005  ### Range within these quatiles
@@ -359,7 +362,7 @@ class DilExp:
             unit = r"CFU"
 
         if log10_p1:
-            unit = r"$log_{10}\left(%s\right)$" % (unit,) 
+            unit = r"$log_{10}\left(%s\right)$" % (unit,)
             tmp  = log10((self.k_range[post_rng_indx]+1)/Sc)
             x = tmp[:-1]
             fx = self.post_array[post_rng_indx[:-1]]/diff(tmp)
@@ -369,7 +372,7 @@ class DilExp:
             x = self.k_range[post_rng_indx]/Sc
             fx = self.post_array[post_rng_indx]
             ylab = "Probability"
-        
+
         ### Plot posterior:
         if ((max(self.s) > 0) or log10_p1):
             plot( x, fx, '-', color=color, linestyle=linestyle)  ###Cont. approximation or density
@@ -381,7 +384,7 @@ class DilExp:
         ### Plot blown up data
         if (not(log10_p1) and plot_data):
             plot( self.y*self.mul, [self.post_array[post_rng_indx[0]]]*self.m, '*', color='orange')
-            ### Plot mean+- 2 sd of blown up data 
+            ### Plot mean+- 2 sd of blown up data
             plot( array([self.mn-3*self.sd, self.mn, self.mn+3*self.sd])*self.mul,\
                  [self.post_array[post_rng_indx[0]]]*3, 'go', linewidth=1)
             plot( array([self.mn-self.sd, self.mn, self.mn+self.sd])*self.mul,\
@@ -395,9 +398,9 @@ class DilExp:
         self.fx = fx ###Save the last plotted values
         return xlim() + ylim()
 
-  
+
 class MultiDilExp:
-    
+
     def __init__( self, K=3, b=500, M=10, J=7, alpha0=1, alpha=10, alphap=1000,\
                  c=30, q=0.05, pr_a=10, Sc=1, Sc_unit=r"cm^2", betabinom=False):
         """Dilution CFU count experiment analysis on several tubes:
@@ -405,7 +408,7 @@ class MultiDilExp:
             K, number of tubes (=3)
             b, prior parameter for the exponential distribution of par. A (=500)
             M, upper value for the U(0,M) prior for par. E. (=10)
-            
+
             Parameters for each plate:
             J, number of tube dilutions (=7)
             alpha0, dilution factor for tube 1 from tube 0: eg. 1ml from 4*10ml
@@ -423,7 +426,7 @@ class MultiDilExp:
         self.Sc = Sc
         self.M = float(M)
         self.MinE = log10(1/self.Sc) #Minimum value for E and S's: CFU=0
-        self.Cte = -log(self.M) - log(b) 
+        self.Cte = -log(self.M) - log(b)
         ### Individual plates, assume single Sc for all coupons
         self.d = [DilExp(J=J, alpha0=alpha0, alpha=alpha, alphap=alphap, c=c, q=q, pr_a=pr_a, Sc=Sc, Sc_unit=Sc_unit, betabinom=betabinom)\
                       for k in range(self.K)]
@@ -454,13 +457,13 @@ class MultiDilExp:
         lp += self.K*(-gashape*log(gasc) - gammaln(gashape)) +\
             sum([(gashape-1)*log(sk) - sk/gasc  for sk in s]) #+ sk*self.logten
         ### HERE THE HYPER PRIOR FOR E ~ U(0,10) (constant), AND A ~exp(b)
-        lp += self.Cte  - a/self.b#- (2-1)*log(a) - (3-1)*log(a)  - e/self.M a/self.b# - a/self.b  #- log(a) 
+        lp += self.Cte  - a/self.b#- (2-1)*log(a) - (3-1)*log(a)  - e/self.M a/self.b# - a/self.b  #- log(a)
         return lp
 
 
     def SimInitValues(self):
         """Simulate initial values for A, E and S (=log10(N/Sc+1))."""
-        
+
         #First, simuate values from the free post of each n0
         S = array([d.SimPost( size=1, CFU_X_Area=True, log10_p1=True)\
                   for d in self.d]).flatten()
@@ -469,8 +472,8 @@ class MultiDilExp:
         # And A from its prior
         A = expon.rvs(size=1, scale=self.b)
         return append(append( A, E), S)
-    
-    
+
+
     def Energy(self, x):
         return -self.LogPost( x[0], x[1], x[2:])
 
@@ -478,8 +481,8 @@ class MultiDilExp:
     def Supp(self, x):
         ###        A                  E and S's                E and S's
         return (all(x > 0.0) and all(self.MinE < x[1:]) and all(x[1:] <= self.M))
-    
-    
+
+
     def RunTwalk( self, T):
         """Run the twalk MCMC with Tr iterations, simulate the two
            initial vaues for theta from self.SimInit."""
@@ -490,8 +493,8 @@ class MultiDilExp:
             xp0=self.SimInitValues()
         self.twalk = pytwalk( n=self.n, U=self.Energy, Supp=self.Supp) #Open the twalk object
         self.twalk.Run( T=T, x0=x0, xp0=xp0 )
-        
-        
+
+
     def CalcProb(self, th=2.0):
         """Calculate P( E <= th | Data)."""
         return sum(self.twalk.Output[:,1] <= th)/float(self.twalk.T)
@@ -500,7 +503,7 @@ class MultiDilExp:
     def TwalkOutput(self):
         """Results of the twalk."""
         return self.twalk.Output
-    
+
     def TwalkE(self):
         """twalk simulation for parameter E."""
         return self.twalk.Output[:,1]
@@ -524,7 +527,7 @@ class MultiDilExp:
         plot( position-alpha*post, e, '-', color=color, linewidth=linewidth)
 
 
-    def PlotResults(self, plot_data=True, fignum=0, color="blue"):        
+    def PlotResults(self, plot_data=True, fignum=0, color="blue"):
         # Plot marg. post for E
         print("Ploting Results ...""")
 
@@ -562,7 +565,7 @@ class MultiDilExp:
         plot( [self.mean_s_mean - 3*self.mean_s_sd,self.mean_s_mean + 3*self.mean_s_sd], [0,0], 'r-', linewidth=4)
         plot( [self.mean_s_mean - 2*self.mean_s_sd,self.mean_s_mean + 2*self.mean_s_sd], [0,0], 'k|', markersize=6)
         plot( [self.mean_s_mean - 1*self.mean_s_sd,self.mean_s_mean + 1*self.mean_s_sd], [0,0], 'k|', markersize=6)
-        plot( [self.mean_s_mean], [0], 'b^', markersize=6)        
+        plot( [self.mean_s_mean], [0], 'b^', markersize=6)
         print((r"Classical estimate: %f$\pm$%f" % (self.mean_s_mean,self.mean_s_sd)))
         print(("Interval 1sd: [ %f, %f]" % (self.mean_s_mean - 1*self.mean_s_sd,self.mean_s_mean + 1*self.mean_s_sd)))
         print(("Interval 2sd: [ %f, %f]" % (self.mean_s_mean - 2*self.mean_s_sd,self.mean_s_mean + 2*self.mean_s_sd)))
@@ -575,25 +578,25 @@ class MultiDilExp:
 
 
 class InterLabDilExp:
-    
+
     def __init__( self, mdlist, M=10, b=500):
         """Dilution CFU count experiment analysis on several labs:
             mdlist: a list of MultiDilExp instances, representing each lab.
             We assume the twalk has been run on each MultiDilExp instance.
-            
+
             A hierarchical model will be fitted to all E's, which are already
             normalized for Sc.  All labs shoould used the same unit for Sc, but
             may in fact used different Sc's.
-            
+
             E_i | \mathcal{E} = e, \mathcal{A} = a \sim E=e, A=a \sim Ga( a, e a^{-1} ).
         """
-        
+
         self.mdlist = mdlist
         self.L = len(self.mdlist) #Number of labs
         self.M = M
         ###Number of parameters in each md isntance.  First tow will be assigned
-        ### E and A, the rest mdn-2 are the s para emeters, log10((N_0^k + 1)/Sc). 
-        self.parsnum = [md.n for md in mdlist] 
+        ### E and A, the rest mdn-2 are the s para emeters, log10((N_0^k + 1)/Sc).
+        self.parsnum = [md.n for md in mdlist]
         ###The fist two will be \mathcal{A} and \mathcal{E} global interlab pars.
         self.n = 2 + sum(self.parsnum) ## total number of parameters
         self.b = float(b)
@@ -613,14 +616,14 @@ class InterLabDilExp:
             lp += md.LogPost( x[indx], x[indx+1], x[indx+2:(indx+md.n)])
             ei = x[indx+1]
             ##Hyper prior for E_i
-            lp += (ca-1)*log(ei)-ei*(ca/ce) 
+            lp += (ca-1)*log(ei)-ei*(ca/ce)
             indx = indx+md.n
         ### The normalization constant in each hyper prior for E_i
         lp += self.L*(ca*log(ca) - ca*log(ce) - gammaln(ca))
         ### HERE THE HYPER-HYPER PRIOR FOR E ~ U(0,10) (constant), AND A ~exp(b)
-        lp += self.Cte - ca/self.b        
+        lp += self.Cte - ca/self.b
         return -lp #Return energy
-            
+
     def Supp( self, x):
         """Un pack all parameters from selfn+2 vector x and send then to individual
            md Supp instances."""
@@ -640,7 +643,7 @@ class InterLabDilExp:
         """Simulate initial values, from the corresponding function in each
            md instance, adding su¡imulated values for \mathcal{A} and \mathcal{E}.
         """
-        
+
         x = zeros(self.n)
         meane = 0.0
         indx = 2
@@ -653,7 +656,7 @@ class InterLabDilExp:
         # And A from its prior
         ca = expon.rvs(size=1, scale=self.b)
         return append(append( ca, ce), x[2:])
-        
+
 
     def RunTwalk( self, T):
         """Run the twalk MCMC with Tr iterations, simulate the two
@@ -664,17 +667,17 @@ class InterLabDilExp:
             sleep(0.005)
             xp0=self.SimInitValues()
         self.twalk.Run( T=T, x0=x0, xp0=xp0 )
-    
+
     def TwalkcE(self):
         return self.twalk.Output[:,1]
 
-        
+
     def AnaEs( self, col, calc_hierachical_Es=False, alpha=0.001, N=200):
         """col: list of colosr to use to plot individual lab post. E's ."""
         kde_list = []
         e0=15
         e1=0
-        for i,md in enumerate(self.mdlist):    
+        for i,md in enumerate(self.mdlist):
             q = mquantiles( md.TwalkE(), [alpha,1-alpha])
             if (q[0] < 1.0): #cut_at_zero: Positive densities
                 q[0]=0.0
@@ -704,7 +707,7 @@ class InterLabDilExp:
         kde = kde_instance.evaluate(e)
         C = sum(diff(e)*kde[:-1]) ### Keep the integral == 1
         kde /= C
-        kde_list += [[kde_instance,e,kde]]    
+        kde_list += [[kde_instance,e,kde]]
         plot( e, kde, 'k-', linewidth=2)
         xlabel(r"$log_{10}\left( CFU + 1 \right)$")
         ylabel("Density")
@@ -716,9 +719,7 @@ class InterLabDilExp:
                 if i==j:
                     TVs[i,j] = 0.0
                 else:
-                    tv_eval = abs(kde_list[i][2]-kde_list[j][2]) 
+                    tv_eval = abs(kde_list[i][2]-kde_list[j][2])
                     TVs[i,j] = 0.5*sum(diff(kde_list[i][1])*tv_eval[:-1])
         """
         return kde_list
-
-            

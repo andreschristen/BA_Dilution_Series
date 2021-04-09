@@ -16,7 +16,7 @@ include also a further analysis of the bacterial evolution under temperature str
 from numpy import array, zeros, exp
 
 from DilExp import DilExp, MultiDilExp
-
+from matplotlib import pyplot as plt
 
 
 def TransformTNTC( count, c=300):
@@ -26,7 +26,7 @@ def TransformTNTC( count, c=300):
         return c
 
 def AnaBF( spreadsheet, lab, T=100000, control=False, data_all=True):
-    """Analyze BF for the repetitions in all data
+    """Analyse BF for the repetitions in all data
        experiment in lab = 'Lab5', 'Lab6', 'Lab8' or
        if control 'Lab5Cntrl', 'Lab6Cntrl', 'Lab8Cntrl'
        not(data_all), that is, only include the first countable dilution.

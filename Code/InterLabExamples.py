@@ -78,7 +78,7 @@ if __name__ == '__main__':
     T=200000
 
     ### BF plot
-    InterLab_CloroxLow1 = read_excel( 'InterLab_CloroxLow1.xls',\
+    InterLab_CloroxLow1 = read_excel( './Data/InterLab_CloroxLow1.xls',\
             ['Lab5', 'Lab6', 'Lab8', 'Lab5Cntrl', 'Lab6Cntrl', 'Lab8Cntrl'])
     print("%10s, %2s, %16s, %16s, %16s, %16s" %\
               ( "experiment", "k" , "bbinom" , "binom" , "corr" , "BF"))

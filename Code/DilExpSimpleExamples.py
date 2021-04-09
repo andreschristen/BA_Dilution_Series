@@ -16,7 +16,7 @@ JA Christen, jac@cimat.mx
 """
 
 from numpy import array
-from pylab import figure, tight_layout
+from pylab import figure, tight_layout,show
 ### This is local packages (no installed)
 from DilExp import DilExp, MultiDilExp
 
@@ -29,9 +29,9 @@ dilexp_single.Data( s=array([0]), y=array([ 1]))
 dilexp_single.Data( s=array([0]*10), y=array([14, 11, 14, 16, 17, 22, 32, 18, 11, 21]), calc_post=True)
 
 figure(1)
-#dilexp_single.PlotPost(log10_p1=False) ###No MCMC
-#dilexp_single.PlotPost(betabinom=True, log10_p1=False)
-#print("bbinom %g, binom %g, BF: %f" % ( dilexp_single.k_betabinom, dilexp_single.k_binom, dilexp_single.k_betabinom/dilexp_single.k_binom))
+dilexp_single.PlotPost(log10_p1=False) ###No MCMC
+dilexp_single.PlotPost(betabinom=True, log10_p1=False)
+print("bbinom %g, binom %g, BF: %f" % ( dilexp_single.k_betabinom, dilexp_single.k_binom, dilexp_single.k_betabinom/dilexp_single.k_binom))
 
 tight_layout()
 
@@ -46,6 +46,8 @@ md.Data( k=1, s=array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),\
               y=array([14, 11, 14, 16, 17, 22, 32, 18, 11, 21])) #Same as dilexp_single
 md.Data( k=2, s=array([1, 1, 1, 1, 1, 0, 0, 0, 0, 0]),\
               y=array([0, 0, 0, 0, 0, 7, 5, 0, 2, 9]))
+
+
 
 md.RunTwalk( T=100000 )
 figure(2)

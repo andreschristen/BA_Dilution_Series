@@ -23,7 +23,7 @@ from DilExp import GetKDE
 
 ######################################################################################################################################################################################
 
-"""  
+"""
 EXAMPLES: Intra Lab Experiment.
 """
 
@@ -44,29 +44,29 @@ def ExpPlots( CBEData, experiment, time, plot_ind=False, K=[0,1], betabinom=Fals
     md = AnaTimeData( CBEData=CBEData, experiment=experiment, time=time, T=500000, fig=[0,1], betabinom=betabinom)
     figure(0)
     tight_layout()
-    savefig("Images/%s_%dmin_TS.png" % (experiment, time))
+    savefig("../Images/%s_%dmin_TS.png" % (experiment, time))
     if plot_ind:
         if betabinom:
             PlotIndPost(md, fig=[1,2], K=K, color="green") #without hierachycal model
         else:
             PlotIndPost(md, fig=[1,2], K=K)
-        figure(2)               
+        figure(2)
         tight_layout()
-        savefig("Images/%s_%dmin_IndPosts.jpg" % (experiment, time))
+        savefig("../Images/%s_%dmin_IndPosts.jpg" % (experiment, time))
     figure(1)
     tight_layout()
     if betabinom:
-        savefig("Images/%s_%dmin_bbinom_Results.jpg" % (experiment, time))
+        savefig("../Images/%s_%dmin_bbinom_Results.jpg" % (experiment, time))
     else:
-        savefig("Images/%s_%dmin_Results.jpg" % (experiment, time))
+        savefig("../Images/%s_%dmin_Results.jpg" % (experiment, time))
     return md
 
 
 if __name__ == '__main__':
-    CBEData = read_excel( 'CBE_BiofilmHotWaterStudies.xls',\
+    CBEData = read_excel( './Data/CBE_BiofilmHotWaterStudies.xls',\
                 ['RoomTemp', '65CTemp', '70CTemp', '75CTemp', '80CTemp'])
     ### Data taken from spreadsheet: "Biofilm Hot Water Studies.xlsx"
-    ### NOTE: The RoomTemp experiment corresponds to the control of the 80C experiment. 
+    ### NOTE: The RoomTemp experiment corresponds to the control of the 80C experiment.
 
     ### md = ExpPlots(...) is a MultiDilExp object, see DilExp
     ### md.d[0].y is the data for repetition 0 etc.
@@ -83,7 +83,7 @@ if __name__ == '__main__':
     dump( rt_CBE, open("CBE_rt_CBE.pkl", "wb")) #To be used by InterLabExamples in the BF plot
 
     All = {} ### Dictiionary to hold MCMC iterations of E for all experiments
-    
+
     experiment='70CTemp'
     time=10
     close(1)
@@ -135,11 +135,11 @@ if __name__ == '__main__':
     figure(1)
     xlim((-0.5,3.5))
     tight_layout()
-    savefig("Images/%s_%dmin_Results.jpg" % (experiment, time))
+    savefig("../Images/%s_%dmin_Results.jpg" % (experiment, time))
     figure(2)
     xlim((0,900))
     tight_layout()
-    savefig("Images/%s_%dmin_IndPosts.jpg" % (experiment, time))
+    savefig("../Images/%s_%dmin_IndPosts.jpg" % (experiment, time))
     ### Log reduction wrt RoomTemp experiment
     close(1)
     figure(1)
@@ -150,12 +150,12 @@ if __name__ == '__main__':
     xlabel(r"$log_{10}\left(\frac{CFU_0 + 1}{CFU + 1}\right)$")
     xlim(( 4, 9))
     tight_layout()
-    savefig("Images/%s_%dmin_LR.jpg" % (experiment, time))
+    savefig("../Images/%s_%dmin_LR.jpg" % (experiment, time))
     print("%s_%s, $P[ LR > 3 ] = %6.4f" % (experiment, time, sum(LR > 3)/len(LR)))
 
     ### Activation threshold figure: Takes longer, some 15 min
     ### We load the data from "CBEallE.pkl" below ########
-    
+
     ### Remaining experiments:
     CBE_R=[\
          ['RoomTemp', [ 10, 15]],\
@@ -195,10 +195,4 @@ if __name__ == '__main__':
     xlabel("min")
     ylabel("Act. Probability")
     tight_layout()
-    savefig("Images/ActivationProbability.jpg")
-
-
-
-
-
-
+    savefig("../Images/ActivationProbability.jpg")
